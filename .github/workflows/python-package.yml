@@ -1,0 +1,28 @@
+from requests import *
+from flask import *
+app = Flask(__name__)
+@app.route('/TikTok-info')
+def info():
+    user = request.args.get("username")
+    try:
+        
+        r = get('https://www.tiktok.com/@{}'.format(user).lower()).text
+        k = str(r.split('"UserModule":')[1]).split('"RecommendUserList"')[0]
+        id = str(k.split('{"id":"')[1]).split('"')[0]
+        print(id)
+        name = str(k.split('"nickname":"')[1]).split('"')[0]
+        bio = str(k.split('"signature":"')[1]).split('"')[0]
+        verified = str(k.split('"verified":')[1]).split(',')[0]
+        private = str(k.split('"privateAccount":')[1]).split(',')[0]
+        secUid = str(k.split('"secUid":"')[1]).split('"')[0]
+        region = str(k.split('"region":"')[1]).split('"')[0]
+        follower = str(k.split('"followerCount":')[1]).split(',')[0]
+        following = str(k.split('"followingCount":')[1]).split(',')[0]
+        heart = str(k.split('"heart":')[1]).split(',')[0]
+        video = str(k.split('"videoCount":')[1]).split(',')[0]
+        info = str('\n "name":"{}",\n "\n'.format(name,id,secUid,verified,private,follower,following,heart,video,region,bio,secUid))
+        return(info)
+        
+    except IndexError:
+        return('"Error":"User Is Not Found"')
+app.run(host='0.0.0.0',port=8080)
